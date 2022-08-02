@@ -1,7 +1,12 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.throttling import ScopedRateThrottle
 from django_filters import (
     FilterSet,
     AllValuesFilter,
@@ -66,9 +71,14 @@ class DroneList(generics.ListCreateAPIView):
         'name',
         'manufacturing_date',
     )
+    throttle_scope = 'drones'
+    throttle_classes = (
+        ScopedRateThrottle,
+    )
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 class DroneDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Drone.objects.all()
@@ -78,6 +88,11 @@ class DroneDetail(generics.RetrieveUpdateDestroyAPIView):
         IsAuthenticatedOrReadOnly,
         IsCurrentUserOwnerOrReadOnly,
     )
+    throttle_scope = 'drones'
+    throttle_classes = (
+        ScopedRateThrottle,
+    )
+
 
 class PilotList(generics.ListCreateAPIView):
     queryset = Pilot.objects.all()
@@ -95,12 +110,32 @@ class PilotList(generics.ListCreateAPIView):
         'name',
         'races_count'
     )
+    authentication_classes = (
+        TokenAuthentication,
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    throttle_scope = 'pilots'
+    throttle_classes = (
+        ScopedRateThrottle,
+    )
 
 
 class PilotDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Pilot.objects.all()
     serializer_class = PilotSerializer
     name = 'pilot-detail'
+    authentication_classes = (
+        TokenAuthentication,
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    throttle_scope = 'pilots'
+    throttle_classes = (
+        ScopedRateThrottle,
+    )
 
 
 class CompetitionFilter(FilterSet):
