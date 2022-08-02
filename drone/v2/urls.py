@@ -5,22 +5,22 @@ from drone import views
 app_name = 'drone'
 
 urlpatterns = [
-    path('drone-categories/',
+    path('vehicle-categories/',
         views.DroneCategoryList.as_view(),
         name=views.DroneCategoryList.name
     ),
     
-    path('drone-categories/<pk>/',
+    path('vehicle-categories/<pk>/',
         views.DroneCategoryDetail.as_view(),
         name=views.DroneCategoryDetail.name
     ),
     
-    path('drones/',
+    path('vehicles/',
         views.DroneList.as_view(),
         name=views.DroneList.name
     ),
 
-    path('drones/<pk>/',
+    path('vehicles/<pk>/',
         views.DroneDetail.as_view(),
         name=views.DroneDetail.name
     ),
