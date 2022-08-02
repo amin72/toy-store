@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters import (
     FilterSet,
     AllValuesFilter,
@@ -20,6 +21,7 @@ from drone.serializers import (
     PilotSerializer,
     PilotCompetitionSerializer,
 )
+from drone.permissions import IsCurrentUserOwnerOrReadOnly
 
 
 class DroneCategoryList(generics.ListCreateAPIView):
@@ -47,6 +49,10 @@ class DroneList(generics.ListCreateAPIView):
     queryset = Drone.objects.all()
     serializer_class = DroneSerializer
     name = 'drone-list'
+    permission_classes = (
+        IsAuthenticatedOrReadOnly,
+        IsCurrentUserOwnerOrReadOnly,
+    )
     filter_fields = (
         'name',
         'drone_category',
@@ -68,7 +74,10 @@ class DroneDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Drone.objects.all()
     serializer_class = DroneSerializer
     name = 'drone-detail'
-
+    permission_classes = (
+        IsAuthenticatedOrReadOnly,
+        IsCurrentUserOwnerOrReadOnly,
+    )
 
 class PilotList(generics.ListCreateAPIView):
     queryset = Pilot.objects.all()
