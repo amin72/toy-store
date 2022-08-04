@@ -85,3 +85,22 @@ class DroneCategoryTests(APITestCase):
         # Make sure we receive only one element in the response
         assert response.data['count'] == 1
         assert response.data['results'][0]['name'] == new_drone_category_name
+
+    def test_update_drone_category(self):
+        """
+        Ensure we can update a single field for a drone category
+        """
+
+        drone_category_name = 'Category Initial Name'
+        response = self.post_drone_category(drone_category_name)
+        url = self.get_full_url(
+            views.DroneCategoryDetail.name,
+            None,
+            {response.data['pk']}
+        )
+        updated_drone_category_name = 'Updated Name'
+        data = {'name': updated_drone_category_name}
+        patch_response = self.client.patch(url, data, format='json')
+
+        assert patch_response.status_code == status.HTTP_200_OK
+        assert patch_response.data['name'] == updated_drone_category_name
