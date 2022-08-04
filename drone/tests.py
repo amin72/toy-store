@@ -70,3 +70,18 @@ class DroneCategoryTests(APITestCase):
         # make sure we receive only one element in the response
         assert response.data['count'] == 1
         assert response.data['results'][0]['name'] == drone_category_name1
+
+    def test_get_drone_categories_collection(self):
+        """
+        Ensure we can retrieve the drone categories collection
+        """
+
+        new_drone_category_name = 'Super Copter'
+        self.post_drone_category(new_drone_category_name)
+        url = self.full_url(views.DroneCategoryList.name)
+        response = self.client.get(url, format='json')
+        assert response.status_code == status.HTTP_200_OK
+
+        # Make sure we receive only one element in the response
+        assert response.data['count'] == 1
+        assert response.data['results'][0]['name'] == new_drone_category_name
