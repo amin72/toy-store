@@ -9,11 +9,11 @@ from drone.urls import app_name
 
 class DroneCategoryTests(APITestCase):
     @staticmethod
-    def full_url(view_name):
-        return reverse(f'{app_name}:{view_name}')
+    def get_full_url(view_name, *args, **kwrags):
+        return reverse(f'{app_name}:{view_name}', *args, **kwrags)
 
     def post_drone_category(self, name):
-        url = self.full_url(views.DroneCategoryList.name)
+        url = self.get_full_url(views.DroneCategoryList.name)
         data = {'name': name}
         response = self.client.post(url, data, format='json')
         return response
@@ -57,7 +57,7 @@ class DroneCategoryTests(APITestCase):
         filter_by_name = {'search': drone_category_name1}
 
         url = '{}?{}'.format(
-            self.full_url(views.DroneCategoryList.name),
+            self.get_full_url(views.DroneCategoryList.name),
             urlencode(filter_by_name)
         )
         print(url)
@@ -78,7 +78,7 @@ class DroneCategoryTests(APITestCase):
 
         new_drone_category_name = 'Super Copter'
         self.post_drone_category(new_drone_category_name)
-        url = self.full_url(views.DroneCategoryList.name)
+        url = self.get_full_url(views.DroneCategoryList.name)
         response = self.client.get(url, format='json')
         assert response.status_code == status.HTTP_200_OK
 
