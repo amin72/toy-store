@@ -1,5 +1,6 @@
 from django.utils.http import urlencode
 from django.shortcuts import reverse
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from drone.models import DroneCategory
@@ -7,13 +8,13 @@ from drone import views
 from drone.urls import app_name
 
 
-class DroneCategoryTests(APITestCase):
-    @staticmethod
-    def get_full_url(view_name, *args, **kwrags):
-        return reverse(f'{app_name}:{view_name}', *args, **kwrags)
+def get_full_url(view_name, *args, **kwrags):
+    return reverse(f'{app_name}:{view_name}', *args, **kwrags)
 
+
+class DroneCategoryTests(APITestCase):
     def post_drone_category(self, name):
-        url = self.get_full_url(views.DroneCategoryList.name)
+        url = get_full_url(views.DroneCategoryList.name)
         data = {'name': name}
         response = self.client.post(url, data, format='json')
         return response
@@ -57,7 +58,7 @@ class DroneCategoryTests(APITestCase):
         filter_by_name = {'search': drone_category_name1}
 
         url = '{}?{}'.format(
-            self.get_full_url(views.DroneCategoryList.name),
+            get_full_url(views.DroneCategoryList.name),
             urlencode(filter_by_name)
         )
         print(url)
@@ -78,7 +79,7 @@ class DroneCategoryTests(APITestCase):
 
         new_drone_category_name = 'Super Copter'
         self.post_drone_category(new_drone_category_name)
-        url = self.get_full_url(views.DroneCategoryList.name)
+        url = get_full_url(views.DroneCategoryList.name)
         response = self.client.get(url, format='json')
         assert response.status_code == status.HTTP_200_OK
 
@@ -93,7 +94,7 @@ class DroneCategoryTests(APITestCase):
 
         drone_category_name = 'Category Initial Name'
         response = self.post_drone_category(drone_category_name)
-        url = self.get_full_url(
+        url = get_full_url(
             views.DroneCategoryDetail.name,
             None,
             {response.data['pk']}
@@ -112,7 +113,7 @@ class DroneCategoryTests(APITestCase):
 
         drone_category_name = 'Easy to retrieve'
         response = self.post_drone_category(drone_category_name)
-        url = self.get_full_url(
+        url = get_full_url(
             views.DroneCategoryDetail.name,
             None,
             {response.data['pk']}
